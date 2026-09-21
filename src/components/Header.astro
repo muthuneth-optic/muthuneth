@@ -1,0 +1,120 @@
+---
+import { business } from "../data/business";
+
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="relative border-b border-gray-100 bg-white">
+  <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-8">
+
+    <!-- Logo -->
+    <a href="/" aria-label={`${business.name} home`}>
+      <img
+        src={business.logo}
+        alt={business.name}
+        class="h-12 w-auto"
+      />
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:block" aria-label="Main navigation">
+      <ul class="flex items-center gap-8">
+        {
+          navItems.map((item) => {
+            const isActive =
+              currentPath === item.href ||
+              (item.href !== "/" && currentPath.startsWith(`${item.href}/`));
+
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={[
+                    "text-sm font-medium transition-colors",
+                    isActive
+                      ? "text-blue-600"
+                      : "text-gray-600 hover:text-blue-600",
+                  ]}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="menu-button"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      class="md:hidden"
+    >
+      <img
+        src="/icons/menu.svg"
+        alt=""
+        width="24"
+        height="24"
+      />
+    </button>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav
+    id="mobile-menu"
+    class="absolute left-0 right-0 top-full z-50 hidden border-b border-gray-100 bg-white px-6 pt-4 pb-5 shadow-sm md:hidden"
+    aria-label="Mobile navigation"
+  >
+    <ul class="mx-auto flex max-w-7xl flex-col gap-4">
+      {
+        navItems.map((item) => {
+          const isActive =
+            currentPath === item.href ||
+            (item.href !== "/" && currentPath.startsWith(`${item.href}/`));
+
+          return (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  "block text-sm font-medium",
+                  isActive
+                    ? "text-blue-600"
+                    : "text-gray-600 hover:text-blue-600",
+                ]}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("#menu-button");
+  const menu = document.querySelector<HTMLElement>("#mobile-menu");
+
+  button?.addEventListener("click", () => {
+    const isOpen = button.getAttribute("aria-expanded") === "true";
+    button.setAttribute("aria-expanded", String(!isOpen));
+    button.setAttribute("aria-label", isOpen ? "Open menu" : "Close menu");
+
+    menu?.classList.toggle("hidden");
+  });
+</script>
