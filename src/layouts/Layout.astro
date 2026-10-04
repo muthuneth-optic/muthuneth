@@ -39,7 +39,9 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 
   <body>
     <Header />
+
     <slot />
+
     <Footer />
   </body>
 </html>
